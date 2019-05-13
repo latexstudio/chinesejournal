@@ -1,0 +1,981 @@
+% \iffalse meta-comment
+%
+% Copyright (C) 2019-2019 by Zeping Lee <zepinglee AT gmail.com>
+%
+% This file may be distributed and/or modified under the
+% conditions of the LaTeX Project Public License, either version 1.3c
+% of this license or (at your option) any later version.
+% The latest version of this license is in
+%    https://www.latex-project.org/lppl.txt
+% and version 1.3c or later is part of all distributions of LaTeX
+% version 2005/12/01 or later.
+%
+%<*internal>
+\iffalse
+\fi
+\begingroup
+  \def\nameoflatex{LaTeX2e}
+\expandafter\endgroup\ifx\nameoflatex\fmtname\else
+\csname fi\endcsname
+%</internal>
+%<*install>
+\input docstrip.tex
+\preamble
+
+Copyright (C) 2019-\the\year by Zeping Lee <zepinglee AT gmail.com>
+
+This file may be distributed and/or modified under the
+conditions of the LaTeX Project Public License, either version 1.3c
+of this license or (at your option) any later version.
+The latest version of this license is in
+   https://www.latex-project.org/lppl.txt
+and version 1.3c or later is part of all distributions of LaTeX
+version 2005/12/01 or later.
+
+\endpreamble
+\keepsilent
+\askforoverwritefalse
+\nopostamble
+\generate{
+  \file{\jobname.cls}{\from{\jobname.dtx}{class}}
+}
+\endbatchfile
+%</install>
+%<*internal>
+\fi
+%</internal>
+%<*driver>
+\ProvidesFile{cjc.dtx}
+%</driver>
+%<class>\NeedsTeXFormat{LaTeX2e}[1999/12/01]
+%<class>\ProvidesClass{cjc}
+%<*class>
+  [2019/06/01 v1.0 A template framework for Chinese dissertations]
+%</class>
+%
+%<*driver>
+\documentclass[a4paper]{ltxdoc}
+\usepackage[UTF8]{ctex}
+\usepackage{amsmath}
+\usepackage{unicode-math}
+\usepackage{siunitx}
+\usepackage{caption}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hypdoc}
+
+\makeatletter
+
+% 设置字体
+\IfFileExists{/System/Library/Fonts/Times.ttc}{
+  \setmainfont{Times}
+  \setsansfont[Scale=MatchLowercase]{Helvetica}
+  \setmonofont[Scale=MatchLowercase]{Menlo}
+  \xeCJKsetwidth{‘’“”}{1em}
+}{}
+\unimathsetup{
+  math-style=ISO,
+  bold-style=ISO,
+}
+\setmathfont[
+  Extension    = .otf,
+  BoldFont     = XITSMath-Bold,
+  StylisticSet = 8,
+]{XITSMath-Regular}
+
+% 定义一些命令用于写文档
+\newcommand\TeXLive{\TeX{} Live}
+\newcommand\unicodechar[1]{U+#1（\symbol{"#1}）}
+\DeclareRobustCommand\file{\nolinkurl}
+\DeclareRobustCommand\env{\texttt}
+\DeclareRobustCommand\pkg{\textsf}
+\DeclareRobustCommand\cls{\textsf}
+\DeclareRobustCommand\opt{\texttt}
+
+% 在 doc 的基础上增加 option 的描述
+\def\DescribeOption{\leavevmode\@bsphack\begingroup\MakePrivateLetters
+  \Describe@Option}
+\def\Describe@Option#1{\endgroup
+              \marginpar{\raggedleft\PrintDescribeOption{#1}}%
+              \SpecialEnvIndex{#1}\@esphack\ignorespaces}
+\@ifundefined{PrintDescribeOption}
+   {\def\PrintDescribeOption#1{\strut \MacroFont #1\ }}{}
+
+% 调整列表的格式
+\setlength\partopsep{\z@}
+\def\@listi{\leftmargin\leftmargini
+            \parsep \z@
+            \topsep 5\p@ \@plus2\p@ \@minus3\p@
+            \itemsep2\p@ \@plus\p@ \@minus\p@}
+\let\@listI\@listi
+\@listi
+
+% listings 的样式
+\lstdefinestyle{lstshell}{
+  basicstyle      = \small\ttfamily,
+  backgroundcolor = \color{lightgray},
+  gobble          = 2, % 重要！否则会生成注释符号"%"
+  language        = bash,
+}
+\newcommand\shellcmd[1]{\colorbox{lightgray}{\lstinline[style=lstshell]|#1|}}
+\lstnewenvironment{shell}{\lstset{style=lstshell}}{}
+\lstnewenvironment{latex}{%
+  \lstset{
+    basicstyle = \small\ttfamily,
+    frame      = single,
+    gobble     = 4,
+    language   = [LaTeX]TeX,
+  }%
+}{}
+
+% 调整版本历史和索引的格式
+\renewcommand\glossaryname{版本历史}
+\GlossaryPrologue{\section*{\glossaryname}}
+\def\changes@#1#2#3{%
+  \protected@edef\@tempa{%
+    \noexpand\glossary{#1 (#2)\levelchar
+    \ifx\saved@macroname\@empty
+      \space
+      \actualchar
+    \else
+      \saved@indexname
+      \actualchar
+      \string\verb\quotechar*%
+      \verbatimchar\saved@macroname
+      \verbatimchar
+      : \levelchar
+    \fi
+    #3}}%
+  \@tempa\endgroup\@esphack}
+\renewcommand\indexname{命令索引}
+\IndexPrologue{%
+  \section*{\indexname}
+  \textit{意大利体的数字表示描述对应索引项的页码；%
+    带下划线的数字表示定义对应索引项的代码行号；%
+    罗马字体的数字表示使用对应索引项的代码行号。}%
+}
+
+\hypersetup{
+  allcolors         = blue,
+  bookmarksnumbered = true,
+  bookmarksopen     = true,
+}
+\makeatother
+
+\EnableCrossrefs
+\CodelineIndex
+\RecordChanges
+% \OnlyDescription
+
+\begin{document}
+  \DocInput{\jobname.dtx}
+  \clearpage
+  \linespread{1.3}
+  \PrintChanges
+  \clearpage
+  \linespread{1}
+  \PrintIndex
+\end{document}
+%</driver>
+% \fi
+%
+% \DoNotIndex{\def,\long,\edef,\xdef,\gdef,\let,\global}
+% \DoNotIndex{\if,\ifnum,\ifdim,\ifcat,\ifmmode,\ifvmode,\ifhmode,%
+%             \iftrue,\iffalse,\ifvoid,\ifx,\ifeof,\ifcase,\else,\or,\fi}
+% \DoNotIndex{\begin,\end,\bgroup,\egroup,\begingroup,\endgroup}
+% \DoNotIndex{\expandafter,\csname,\endcsname}
+% \DoNotIndex{\hsize,\vsize,\hskip,\vskip,\kern,\hfil,\hfill,\hss}
+% \DoNotIndex{\hspace,\vspace}
+% \DoNotIndex{\p@,\m@ne,\z@,\@ne,\tw@,\@plus,\@minus}
+% \DoNotIndex{\newcounter,\setcounter,\addtocounter,}
+% \DoNotIndex{\newdim,\newlength,\setlength,\addtolength}
+% \DoNotIndex{\newcommand,\renewcommand,\providecommand,\DeclareRobustCommand}
+% \DoNotIndex{\newenvironment,\renewenvironment}
+% \DoNotIndex{\RequirePackage,\LoadClass,\ProvidesClass}
+% \DoNotIndex{\DeclareOption,\CurrentOption,\ExecuteOptions,\ProcessOptions}
+% \DoNotIndex{\rmfamily,\sffamily,\ttfamily,\bfseries,\mdseries,\itshape,%
+%             \textrm,\textsf,\texttt,\textbf,\textmd,\textit,\textsl,\textsc}
+% \DoNotIndex{\iint,\iiint,\iiiint,\oint,\oiint,\oiiint,%
+%             \intclockwise,\varointclockwise,\ointctrclockwise,\sumint,%
+%             \intbar,\intBar,\fint,\cirfnint,\awint,\rppolint,%
+%             \scpolint,\npolint,\pointint,\sqint,\intlarhk,\intx,%
+%             \intcap,\intcup,\upint,\lowint}
+% \DoNotIndex{\a,\b,\c,\d,\e,\f,\g,\h,\i,\j,\k,\l,%
+%             \m,\n,\o,\p,\q,\r,\s,\t,\u,\v,\w,\x,\y,\z,%
+%             \A,\B,\C,\D,\E,\F,\G,\H,\I,\J,\K,\L,%
+%             \M,\N,\O,\P,\Q,\R,\S,\T,\U,\V,\W,\X,\Y,\Z,%
+%             \do\#,\$,\%,\&,\@,\\,\{,\},\^,\_,\~,\ ,\,,\!,\',\",\/,\*,\-}
+% \DoNotIndex{\NAT@@close,\NAT@@open,\NAT@cite,\NAT@citenum,\NAT@citesuper,%
+%             \NAT@citex,\NAT@citexnum,\NAT@cmt,\NAT@ctype,\NAT@date,%
+%             \NAT@last@yr,\NAT@mbox,\NAT@penalty,\NAT@spacechar,%
+%             \@citea,\def@NAT@last@yr,\ifNAT@swa}
+% \DoNotIndex{\quad,\par,\relax,\ccwd}
+% \DoNotIndex{\bp@}
+%
+%
+%
+% \GetFileInfo{\jobname.dtx}
+%
+% \title{\cls{cjc} 使用说明}
+% \author{Zeping Lee\thanks{zepinglee AT gmail.com}}
+% \date{\filedate\qquad\fileversion}
+% \maketitle
+%
+% \changes{v1.0}{2019/06/01}{Initial version.}
+%
+%
+% \StopEventually
+% \clearpage
+% \appendix
+%
+%
+% \section{代码实现}
+% \label{sec:code}
+% \linespread{1}
+%
+%
+% \subsection{处理选项}
+%
+% 检查编译引擎，要求使用 XeLaTeX。
+%    \begin{macrocode}
+\RequirePackage{ifxetex}
+\RequireXeTeX
+%    \end{macrocode}
+%
+%    \begin{macrocode}
+\newif\ifcjc@chinese
+\DeclareOption{chinese}{\cjc@chinesetrue}
+\DeclareOption{english}{\cjc@chinesefalse}
+\DeclareOption*{\PassOptionsToClass{\CurrentOption}{ctexart}}
+\ExecuteOptions{chinese}
+\ProcessOptions\relax
+%    \end{macrocode}
+%
+%
+% \subsection{加载文档类和宏包}
+%
+%    \begin{macrocode}
+\ifcjc@chinese
+  \PassOptionsToClass{scheme=chinese}{ctexart}
+\else
+  \PassOptionsToClass{scheme=plain}{art}
+\fi
+\PassOptionsToPackage{quiet}{xeCJK}
+%    \end{macrocode}
+%
+% 载入 \cls{ctexart} 文档类，注意要求为 2.2 或更高的版本。
+%    \begin{macrocode}
+\LoadClass[UTF8,a4paper,twoside,twocolumn,zihao=5,linespread=1.08]{ctexart}[2016/05/16]
+%    \end{macrocode}
+%
+% 检测 ctexart 版本，如果版本过低会报错
+%    \begin{macrocode}
+\@ifclasslater{ctexart}{2016/05/16}{}{
+  \ClassError{cjc}{%
+    This template requires TeX Live\MessageBreak 2016 or later version}{}
+}
+%    \end{macrocode}
+%
+% 建议在模板开始处载入全部宏包，不要轻易改变加载顺序。
+% \pkg{hyperref} 一般在最后加载。
+%    \begin{macrocode}
+\RequirePackage{amsmath}
+\RequirePackage{unicode-math}
+\RequirePackage{amsthm}
+\RequirePackage{geometry}
+\RequirePackage{graphicx}
+\RequirePackage{fancyhdr}
+\RequirePackage{caption}
+\RequirePackage{url}
+\RequirePackage[numbers,sort&compress]{natbib}
+%    \end{macrocode}
+%
+%
+% \subsection{字体}
+%
+% \subsubsection{字体库}
+%
+% \begin{macro}{\cjc@strifeq}
+% 使用 \LaTeX3 的功能判断字符串是否相等。这里也可以使用 \pkg{xstring} 宏包。
+%    \begin{macrocode}
+\newcommand\cjc@strifeq{\csname str_if_eq_x:nnTF\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\cjc@fontset}
+% 将 \pkg{ctex} 的 \opt{fontset} 存在 \cs{cjc@fontset} 方便 \LaTeXe{} 调用。
+%    \begin{macrocode}
+\newcommand\cjc@fontset{\csname g__ctex_fontset_tl\endcsname}
+%    \end{macrocode}
+% \end{macro}
+%
+% 大部分学位论文都要求西文字体使用 Times New Roman，
+% 但是在 Linux 下没有这两个字体，所以使用它们的克隆版 TeX Gyre Termes。
+%    \begin{macrocode}
+\cjc@strifeq{\cjc@fontset}{fandol}{
+  \setmainfont[
+    Extension      = .otf,
+    UprightFont    = *-regular,
+    BoldFont       = *-bold,
+    ItalicFont     = *-italic,
+    BoldItalicFont = *-bolditalic,
+  ]{texgyretermes}
+  \setsansfont[
+    Extension      = .otf,
+    UprightFont    = *-regular,
+    BoldFont       = *-bold,
+    ItalicFont     = *-italic,
+    BoldItalicFont = *-bolditalic,
+  ]{texgyreheros}
+  \setmonofont[
+    Extension      = .otf,
+    UprightFont    = *-regular,
+    BoldFont       = *-bold,
+    ItalicFont     = *-italic,
+    BoldItalicFont = *-bolditalic,
+    Scale          = MatchLowercase,
+  ]{texgyrecursor}
+  \ClassWarningNoLine{cjc}{%
+    You are using Fandol font family.\MessageBreak
+    Some glyphs may be missing.\MessageBreak
+    Please switch to a high-quality font set
+  }
+}{
+  \setmainfont{Times New Roman}
+  \setsansfont[Scale=MatchLowercase]{Arial}
+  \cjc@strifeq{\cjc@fontset}{mac}{
+    \setmonofont[Scale=MatchLowercase]{Menlo}
+  }{
+    \setmonofont[Scale=MatchLowercase]{Courier New}
+  }
+}
+%    \end{macrocode}
+%
+% 中文字体可以由 \pkg{ctex} 自动设置，但是会有问题：
+% \begin{enumerate}
+%   \item 无衬线字体默认会使用微软雅黑或者苹方，这对打印不太友好；
+%   \item 没有粗体的字体不会开启伪粗；
+% \end{enumerate}
+% 所以需要重新配置一部分，参考 \pkg{ctex} 宏包。
+%    \begin{macrocode}
+\cjc@strifeq{\cjc@fontset}{mac}{
+  \setCJKmainfont[
+       UprightFont = * Light,
+          BoldFont = Heiti SC Medium,
+        ItalicFont = Kaiti SC,
+    BoldItalicFont = Kaiti SC Bold,
+  ]{Songti SC}
+  \setCJKsansfont[BoldFont=* Medium]{Heiti SC}
+  \setCJKfamilyfont{zhsong}[
+       UprightFont = * Light,
+          BoldFont = * Bold,
+  ]{Songti SC}
+  \setCJKfamilyfont{zhhei}[BoldFont=* Medium]{Heiti SC}
+  \setCJKfamilyfont{zhkai}[BoldFont=* Bold]{Kaiti SC}
+  \xeCJKsetwidth{‘’“”}{1em}
+}{
+  \xeCJKsetup{EmboldenFactor=2}
+  \cjc@strifeq{\cjc@fontset}{windows}{
+    \IfFileExists{C:/bootfont.bin}{
+      \setCJKmainfont[
+        BoldFont   = SimHei,
+        ItalicFont = KaiTi_GB2312,
+      ]{SimSun}
+      \setCJKfamilyfont{zhkai}{KaiTi_GB2312}
+    }{
+      \setCJKmainfont[
+        BoldFont   = SimHei,
+        ItalicFont = KaiTi
+      ]{SimSun}
+      \setCJKfamilyfont{zhkai}{KaiTi}
+    }
+    \setCJKsansfont{SimHei}
+    \setCJKfamilyfont{zhsong}{SimSun}
+    \setCJKfamilyfont{zhhei}{SimHei}
+  }{}
+}
+%    \end{macrocode}
+%
+% 使用 \pkg{unicode-math} 配置数学字体。
+%    \begin{macrocode}
+\unimathsetup{
+  math-style = ISO,
+  bold-style = ISO,
+  nabla      = upright,
+  partial    = upright,
+}
+%    \end{macrocode}
+%
+% 使用 XITS Math 作为数学字体。
+%
+% 注意，\cs{IfFontExistsTF} 是 \pkg{fontspec} 2017/01/20 v2.5c 才提供的；
+% 而 XITS 字体于 2018-10-03 更改了字体的文件名。
+%    \begin{macrocode}
+\newif\ifcjc@xitsnew
+\@ifpackagelater{fontspec}{2017/01/20}{
+  \IfFontExistsTF{XITSMath-Regular.otf}{
+    \cjc@xitsnewtrue
+  }{}
+}{}
+\ifcjc@xitsnew
+  \setmathfont[
+    Extension    = .otf,
+    BoldFont     = XITSMath-Bold,
+    StylisticSet = 8,
+  ]{XITSMath-Regular}
+  \setmathfont[range={cal,bfcal},StylisticSet=1]{XITSMath-Regular.otf}
+\else
+  \setmathfont[
+    Extension    = .otf,
+    BoldFont     = *bold,
+    StylisticSet = 8,
+  ]{xits-math}
+  \setmathfont[range={cal,bfcal},StylisticSet=1]{xits-math.otf}
+\fi
+%    \end{macrocode}
+%
+% \begin{macro}{\cjc@circlefont}
+% 五级节标题和脚注需要使用带圈数字，
+% 但 Times New Roman 没有这些符号的字形，而华文宋体和中易宋体提供了这些字形，
+% 配置在 \cs{cjc@circlefont}。
+%    \begin{macrocode}
+\cjc@strifeq{\cjc@fontset}{mac}{
+  \newfontfamily\cjc@circlefont{Songti SC Light}
+}{
+  \cjc@strifeq{\cjc@fontset}{windows}{
+    \newfontfamily\cjc@circlefont{SimSun}
+  }{
+    \ifcjc@xitsnew
+      \newfontfamily\cjc@circlefont{XITS-Regular.otf}
+    \else
+      \newfontfamily\cjc@circlefont{xits-regular.otf}
+    \fi
+  }
+}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsubsection{字号与行距}
+%
+% 目前最广泛使用的印刷的长度单位点（磅）通常指 PostScript point
+% \footnote{\url{https://en.wikipedia.org/wiki/Point_(typography)}}，
+% 在 \LaTeX{} 中是 bp，比默认的 pt 略大。
+% 这里保存起来可以节约编译时间。
+%    \begin{macrocode}
+\newdimen\bp@
+\bp@=1bp
+%    \end{macrocode}
+%
+%
+% \subsection{处理语言}
+%
+% 由于 Unicode 的一些标点符号是中西文混用的：
+% \unicodechar{00B7}、
+% \unicodechar{2013}、
+% \unicodechar{2014}、
+% \unicodechar{2018}、
+% \unicodechar{2019}、
+% \unicodechar{201C}、
+% \unicodechar{201D}、
+% \unicodechar{2025}、
+% \unicodechar{2026}、
+% \unicodechar{2E3A}，
+% 所以要根据语言设置正确的字体。
+% \footnote{\url{https://github.com/CTeX-org/ctex-kit/issues/389}}
+% 所以要根据语言设置正确的字体。
+%    \begin{macrocode}
+\newcommand\cjc@setchinese{%
+  \xeCJKResetPunctClass
+}
+\newcommand\cjc@setenglish{%
+  \xeCJKDeclareCharClass{HalfLeft}{"2018, "201C}%
+  \xeCJKDeclareCharClass{HalfRight}{%
+    "00B7, "2019, "201D, "2013, "2014, "2025, "2026, "2E3A%
+  }%
+}
+\newcommand\cjc@setdefaultlanguage{%
+  \ifcjc@chinese
+    \cjc@setchinese
+  \else
+    \cjc@setenglish
+  \fi
+}
+%    \end{macrocode}
+%
+%
+% \subsection{纸张和页面}
+% 使用 \pkg{geometry} 宏包设置纸张和页面。
+%
+% 纸张：A4；
+%
+% 页面设置：上、下 2.6 cm，左、右 2 cm，页眉 1.7 cm，页脚 1.7 cm。
+%
+% 注意这里指的是页眉顶部到纸张顶部的距离为 1.7 cm，
+% 所以 $\text{footskip} = \SI{2.6}{cm} - \SI{1.7}{cm} = \SI{0.9}{cm}$
+%
+%    \begin{macrocode}
+\geometry{
+  paper      = a4paper,
+  vmargin    = 2.6cm,
+  hmargin    = 2cm,
+  headheight = 0.75cm,
+  headsep    = 0.15cm,
+  twocolumn  = true,
+  columnsep  = 0.75cm,
+}
+%    \end{macrocode}
+%
+% 使用 \pkg{fancy} 需要先调用 |\pagestyle{fancy}| 再修改 \cs{sectionmark}。
+%    \begin{macrocode}
+\pagestyle{fancy}
+\let\sectionmark\@gobble
+\renewcommand\headrulewidth{0.4\p@}
+%    \end{macrocode}
+%
+% 页眉与该部分的章标题相同，宋体 10.5 磅（五号）居中。
+% 页码：宋体 10.5 磅、页面下脚居中。
+%    \begin{macrocode}
+\newcommand\cjc@hf@font{\small}
+%    \end{macrocode}
+%
+% 重定义默认的 |plain| page style，会显示页眉和页脚。
+%    \begin{macrocode}
+\fancypagestyle{main}{%
+  \fancyhf{}%
+  \fancyhead[LO]{\cjc@hf@font ? 期}%
+  \fancyhead[CO]{\cjc@hf@font 作者名等：论文题目}%
+  \fancyhead[RO,LE]{\cjc@hf@font\thepage}%
+  \fancyhead[CE]{\cjc@hf@font 计算机学报}%
+  \fancyhead[RE]{\cjc@hf@font \the\year{} 年}%
+}
+\pagestyle{main}
+%    \end{macrocode}
+%
+% |headings| 只有页眉，没有页脚，用于研究生的符号说明和本科生的 front matter。
+%    \begin{macrocode}
+\fancypagestyle{plain}{%
+  \fancyhf{}%
+  \fancyhead[L]{\cjc@hf@font 第 ?? 卷\quad 第 ? 期\\\the\year{} 年 \the\month{} 月}%
+  \fancyhead[C]{\cjc@hf@font 计算机学报\\CHINESE JOURNAL OF COMPUTERS}%
+  \fancyhead[R]{\cjc@hf@font Vol. ??  No. ?\\???.20??}%
+}
+%    \end{macrocode}
+%
+%
+% \subsection{标题}
+%
+% \begin{macro}{\maketitle}
+% 定义命令用于录入信息。
+%    \begin{macrocode}
+\def\@maketitle{%
+  \newpage
+  \null
+  \vskip 2em%
+  \begin{center}%
+  \let \footnote \thanks
+    % {\LARGE \@title \par}%
+    {\heiti\zihao{2}\@title \par}%
+    \vskip 1.5em%
+    % {\large
+    {\zihao{3}%
+      \lineskip .5em%
+      \begin{tabular}[t]{c}%
+        \@author
+      \end{tabular}\par}%
+    \vskip 1em%
+    % {\large \@date}%
+  \end{center}%
+  \par
+  \vskip 1.5em}
+%    \end{macrocode}
+% \end{macro}
+%
+%
+% \subsection{摘要}
+%
+% \begin{environment}{abstract}
+%    \begin{macrocode}
+\renewenvironment{abstract}{%
+    \if@twocolumn
+      \section*{\abstractname}%
+    \else
+      \small
+      \begin{center}%
+        {\bfseries \abstractname\vspace{-.5em}\vspace{\z@}}%
+      \end{center}%
+      \quotation
+    \fi}
+    {\if@twocolumn\else\endquotation\fi}
+%    \end{macrocode}
+% \end{environment}
+%
+%
+% \subsection{章节标题}
+%
+% 用 \pkg{ctex} 的接口设置全部章节标题格式。
+%
+% 一级标题：4 号黑体，段前 8 磅，段后 8 磅。
+%    \begin{macrocode}
+\ctexset{
+  section = {
+    format     = \bfseries\zihao{4},
+    beforeskip = 8\bp@,
+    afterskip  = 8\bp@,
+  },
+%    \end{macrocode}
+%
+% 二级标题：5 号黑体，段前 0.25 行，段后 0.25 行。
+%    \begin{macrocode}
+  subsection = {
+    format     = \bfseries\zihao{5},
+    beforeskip = 2.625\bp@,
+    afterskip  = 2.625\bp@,
+  },
+%    \end{macrocode}
+%
+% 三级节标题：5 号宋体，段前段后 0 磅。
+%    \begin{macrocode}
+  subsubsection = {
+    format     = \zihao{5},
+    beforeskip = \z@,
+    afterskip  = \z@,
+  },
+}
+%    \end{macrocode}
+%
+%
+% \subsection{正文}
+%
+% \cs{sloppy} 可以减少“overfull boxes”。
+%    \begin{macrocode}
+\sloppy
+%    \end{macrocode}
+%
+% 禁止扩大段间距。（\href{https://github.com/ustctug/ustcthesis/issues/209}{
+%   ustctug/ustcthesis\#209}）
+%    \begin{macrocode}
+\raggedbottom
+%    \end{macrocode}
+%
+% 段间距 0 磅。
+%    \begin{macrocode}
+\setlength{\parskip}{\z@}
+%    \end{macrocode}
+%
+% URL 的字体设为保持原样。
+%    \begin{macrocode}
+\urlstyle{same}
+%    \end{macrocode}
+%
+% 使用 \pkg{xurl} 宏包的方法，增加 URL 可断行的位置。
+%    \begin{macrocode}
+\def\UrlBreaks{%
+  \do\/%
+  \do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j\do\k\do\l%
+     \do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t\do\u\do\v\do\w\do\x\do\y\do\z%
+  \do\A\do\B\do\C\do\D\do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L%
+     \do\M\do\N\do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X\do\Y\do\Z%
+  \do0\do1\do2\do3\do4\do5\do6\do7\do8\do9\do=\do/\do.\do:%
+  \do\*\do\-\do\~\do\'\do\"\do\-}
+\Urlmuskip=0mu plus 0.1mu
+%    \end{macrocode}
+%
+%
+% \subsection{浮动体}
+%
+% \LaTeX{} 对放置浮动体的要求比较强，这里按照 UK TeX FAQ 的建议
+% \footnote{\url{https://texfaq.org/FAQ-floats}} 对其适当放宽。
+%    \begin{macrocode}
+\renewcommand\topfraction{.85}
+\renewcommand\bottomfraction{.7}
+\renewcommand\textfraction{.15}
+\renewcommand\floatpagefraction{.66}
+\renewcommand\dbltopfraction{.66}
+\renewcommand\dblfloatpagefraction{.66}
+\setcounter{topnumber}{9}
+\setcounter{bottomnumber}{9}
+\setcounter{totalnumber}{20}
+\setcounter{dbltopnumber}{9}
+%    \end{macrocode}
+%
+% 修改默认的浮动体描述符为 |htb|。
+%    \begin{macrocode}
+\def\fps@figure{htb}
+\def\fps@table{htb}
+%    \end{macrocode}
+%
+% 用 \pkg{caption} 宏包设置图、表的格式：
+%
+% 图片说明字体为小 5 号。
+%
+% 表号、表题置于表的上方，宋体 10.5 磅居中，单倍行距，段前 6 磅，段后 6 磅，
+% 表号与表题文字之间空一字，表号、表题加粗。
+% 表注左缩进两字，续行悬挂缩进左对齐，两端对齐。
+%    \begin{macrocode}
+% \setlength{\floatsep}{6\bp@}
+% \setlength{\textfloatsep}{6\bp@}
+% \setlength{\intextsep}{6\bp@}
+\DeclareCaptionLabelSeparator{zhspace}{\hspace{\ccwd}}
+\captionsetup{
+  justification  = centerlast,
+  font           = small,
+  labelsep       = zhspace,
+  skip           = 6\bp@,
+  figureposition = bottom,
+  tableposition  = top,
+}
+\DeclareCaptionFont{heiti}{\heiti}
+\captionsetup[table]{
+  font = {heiti,small},
+}
+%    \end{macrocode}
+%
+%
+% \subsection{数学符号}
+%
+% 根据中文的数学排印习惯进行设置：
+%
+% \begin{macro}{\ldots}
+% 省略号一律居中，所以 \cs{ldots} 不再居于底部。
+%    \begin{macrocode}
+\ifcjc@chinese
+  \def\mathellipsis{\cdots}
+\fi
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\le}
+% \begin{macro}{\ge}
+% 小于等于号、大于等于号要使用倾斜的字形。
+%    \begin{macrocode}
+\protected\def\le{\leqslant}
+\protected\def\ge{\geqslant}
+\AtBeginDocument{%
+  \renewcommand\leq{\leqslant}%
+  \renewcommand\geq{\geqslant}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\int}
+% 积分号的上下限默认置于上下两侧。
+%    \begin{macrocode}
+\removenolimits{%
+  \int\iint\iiint\iiiint\oint\oiint\oiiint
+  \intclockwise\varointclockwise\ointctrclockwise\sumint
+  \intbar\intBar\fint\cirfnint\awint\rppolint
+  \scpolint\npolint\pointint\sqint\intlarhk\intx
+  \intcap\intcup\upint\lowint
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\Re}
+% \begin{macro}{\Im}
+% 实部、虚部操作符使用罗马体 $\mathrm{Re}$、$\mathrm{Im}$ 而不是 fraktur 体
+% $\Re$、$\Im$。
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \renewcommand\Re{\operatorname{Re}}%
+  \renewcommand\Im{\operatorname{Im}}%
+}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\nabla}
+% \cs{nabla} 使用粗正体。
+%    \begin{macrocode}
+\AtBeginDocument{%
+  \renewcommand\nabla{\mbfnabla}%
+}
+%    \end{macrocode}
+% \end{macro}
+%
+% \begin{macro}{\bm}
+% \begin{macro}{\boldsymbol}
+% 兼容旧的粗体命令：\pkg{bm} 的 \cs{bm} 和 \pkg{amsmath} 的 \cs{boldsymbol}。
+%    \begin{macrocode}
+\newcommand\bm{\symbf}
+\renewcommand\boldsymbol{\symbf}
+%    \end{macrocode}
+% \end{macro}
+% \end{macro}
+%
+% \begin{macro}{\square}
+% 兼容 \pkg{amssymb} 中的命令。
+%    \begin{macrocode}
+\newcommand\square{\mdlgwhtsquare}
+%    \end{macrocode}
+% \end{macro}
+%
+% 提供一些方便的命令：
+%    \begin{macrocode}
+\newcommand\upe{\symup{e}}
+\newcommand\upi{\symup{i}}
+\newcommand\dif{\mathop{}\!\mathrm{d}}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+%    \end{macrocode}
+%
+%
+% \subsubsection{数学定理}
+%
+%    \begin{macrocode}
+\newtheoremstyle{cjc}
+  {\z@}{\z@}
+  {}{2\ccwd}
+  {\bfseries}{.}
+  {\ccwd}{}
+\theoremstyle{cjc}
+%    \end{macrocode}
+% 定义新的定理
+%    \begin{macrocode}
+\newcommand\cjc@assertionname{断言}
+\newcommand\cjc@assumptionname{假设}
+\newcommand\cjc@axiomname{公理}
+\newcommand\cjc@corollaryname{推论}
+\newcommand\cjc@definitionname{定义}
+\newcommand\cjc@examplename{例}
+\newcommand\cjc@lemmaname{引理}
+\newcommand\cjc@proofname{证明}
+\newcommand\cjc@propositionname{命题}
+\newcommand\cjc@remarkname{注}
+\newcommand\cjc@theoremname{定理}
+\newtheorem{theorem}             {\cjc@theoremname}
+\newtheorem{assertion}  [theorem]{\cjc@assertionname}
+\newtheorem{axiom}      [theorem]{\cjc@axiomname}
+\newtheorem{corollary}  [theorem]{\cjc@corollaryname}
+\newtheorem{lemma}      [theorem]{\cjc@lemmaname}
+\newtheorem{proposition}[theorem]{\cjc@propositionname}
+\newtheorem{assumption}          {\cjc@assumptionname}
+\newtheorem{definition}          {\cjc@definitionname}
+\newtheorem{example}             {\cjc@examplename}
+\newtheorem*{remark}             {\cjc@remarkname}
+%    \end{macrocode}
+% \pkg{amsthm} 单独定义了 proof 环境，这里重新定义以满足格式要求。
+% 原本模仿 \pkg{amsthm} 写成 |\item[\hskip\labelsep\hskip2\ccwd #1\hskip\ccwd]|，
+% 但是却会多出一些间隙。
+%    \begin{macrocode}
+\renewenvironment{proof}[1][\proofname]{\par
+  \pushQED{\qed}%
+  \normalfont \topsep6\p@\@plus6\p@\relax
+  \trivlist
+    \item\relax\hskip2\ccwd
+    \textbf{#1}
+    \hskip\ccwd\ignorespaces
+  }{%
+  \popQED\endtrivlist\@endpefalse
+}
+\renewcommand\proofname\cjc@proofname
+%    \end{macrocode}
+%
+%
+% \subsection{参考文献}
+%
+% \begin{environment}{thebibliography}
+% 参考文献列表格式：宋体 10.5 磅，行距 20 磅，续行缩进两字，左对齐。
+%    \begin{macrocode}
+\renewcommand\bibfont{\fontsize{7.5\bp@}{14\bp@}\selectfont}
+\renewcommand\@biblabel[1]{[#1]\hfill}
+%    \end{macrocode}
+% \end{environment}
+%
+%
+% \subsection{其他宏包的设置}
+%
+% 这些宏包并非格式要求，但是为了方便同学们使用，在这里进行简单设置。
+%    \begin{macrocode}
+\newcommand\cjc@atendpackage{\csname ctex_at_end_package:nn\endcsname}
+%    \end{macrocode}
+%
+%
+% \subsubsection{\pkg{hyperref} 宏包}
+%
+%    \begin{macrocode}
+\cjc@atendpackage{hyperref}{
+  \hypersetup{
+    bookmarksnumbered  = true,
+    bookmarksopen      = true,
+    bookmarksopenlevel = 1,
+    linktoc            = all,
+    unicode            = true,
+    psdextra           = true,
+    hidelinks,
+  }
+%    \end{macrocode}
+%
+% 填写 PDF 元信息。
+%    \begin{macrocode}
+  \AtBeginDocument{%
+    \hypersetup{
+      pdftitle  = \@title,
+      pdfauthor = \@author,
+    }%
+  }
+%    \end{macrocode}
+%
+% 在 PDF 字符串中去掉换行，以减少 \pkg{hyperref} 的警告信息。
+%    \begin{macrocode}
+  \pdfstringdefDisableCommands{
+    \let\\\@empty
+    \let\hspace\@gobble
+  }
+%    \end{macrocode}
+%
+% \pkg{hyperref} 与 \pkg{unicode-math} 存在一些兼容性问题，见
+% \href{https://github.com/ustctug/ustcthesis/issues/223}{
+%   ustctug/ustcthesis\#223} 和
+% \href{https://github.com/ho-tex/hyperref/pull/90}{ho-tex/hyperref\#90}。
+%    \begin{macrocode}
+  \@ifpackagelater{hyperref}{2019/04/27}{}{%
+    \g@addto@macro\psdmapshortnames{\let\mu\textmugreek}%
+  }
+%    \end{macrocode}
+%
+% 设置中文的 \cs{autoref}。
+% \footnote{\url{https://tex.stackexchange.com/a/66150/82731}}
+%    \begin{macrocode}
+  \ifcjc@chinese
+    \def\equationautorefname~#1\null{公式~(#1)\null}
+    \def\footnoteautorefname{脚注}
+    \def\itemautorefname~#1\null{第~#1 项\null}
+    \def\figureautorefname{图}
+    \def\tableautorefname{表}
+    \def\appendixautorefname{附录}
+    \def\sectionautorefname~#1\null{第~#1 节\null}
+    \def\subsectionautorefname~#1\null{第~#1 节\null}
+    \def\subsubsectionautorefname~#1\null{第~#1 节\null}
+    \def\theoremautorefname{定理}
+    \def\HyRef@autopageref#1{\hyperref[{#1}]{第~\pageref*{#1} 页}}
+  \fi
+}
+%    \end{macrocode}
+%
+%
+% \subsubsection{\pkg{siunitx} 宏包}
+%
+%    \begin{macrocode}
+\cjc@atendpackage{siunitx}{
+  \sisetup{
+    group-minimum-digits = 4,
+    separate-uncertainty = true,
+    inter-unit-product   = \ensuremath{{}\cdot{}},
+  }
+  \ifcjc@chinese
+    \sisetup{
+      list-final-separator = { 和 },
+      list-pair-separator  = { 和 },
+      range-phrase         = {～},
+    }
+  \fi
+}
+%    \end{macrocode}
+%
+% \Finale
+\endinput
+% \Finale
+\endinput
